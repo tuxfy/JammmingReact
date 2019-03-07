@@ -13,8 +13,7 @@ export class TrackList extends React.Component{
                         key={track.id} 
                         track={track}
                         onTrackAction={this.props.onTrackAction} 
-                        isRemoval={this.props.isRemoval!==undefined} 
-                        onPlayTrack={this.props.onPlayTrack || undefined} />
+                        isRemoval={this.props.isRemoval!==undefined}  />
                 })}                
             </div>            
         )

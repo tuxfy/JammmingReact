@@ -11,7 +11,6 @@ export class SearchResults extends React.Component{
                 <h2>Results</h2>
                 <TrackList 
                     onTrackAction={this.props.onTrackAction} 
-                    onPlayTrack={this.props.onPlayTrack} 
                     trackList={this.props.searchResults} />
             </div>
         );
@@ -21,5 +20,4 @@ export class SearchResults extends React.Component{
 SearchResults.propTypes = {
     searchResults:      PropTypes.array.isRequired,
     onTrackAction:      PropTypes.func.isRequired,
-    onPlayTrack:        PropTypes.func.isRequired,
 };

@@ -6,33 +6,20 @@ export class Track extends React.Component{
     constructor(props){
         super(props);
         this.handleClick    = this.handleClick.bind(this);
-        this.handlePlay     = this.handlePlay.bind(this);
     }
 
     renderAction(){
         return this.props.isRemoval? '-' : '+';
-    }
-
-    renderPlay(){
-        if( this.props.onPlayTrack !== undefined ){
-            // return <a onClick={this.handlePlay} className="Track-action">&#9658; </a>
-        }
-    }
+    }    
 
     handleClick(e){
         this.props.onTrackAction(this.props.track);  
         e.preventDefault();
-    }
-
-    handlePlay(e){
-        this.props.onPlayTrack(this.props.track);
-        e.preventDefault();
-    }
+    }    
 
     render(){
         return (
             <div className="Track">        
-                {this.renderPlay()} 
                 <iframe src={"https://open.spotify.com/embed/track/"+this.props.track.id} width="80" height="80" frameBorder="0" allowtransparency="true" allow="encrypted-media"></iframe>
                 <div className="Track-information">
                 <h3>{this.props.track.name}</h3>

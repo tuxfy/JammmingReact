@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import './App.css';
 
-import { SearchBar } from './components/SearchBar/SearchBar';
-import { SearchResults } from './components/SearchResults/SearchResults';
-import { Playlist } from './components/Playlist/Playlist';
-import { Spotify } from './util/Spotify';
+import { SearchBar } from '../SearchBar/SearchBar';
+import { SearchResults } from '../SearchResults/SearchResults';
+import { Playlist } from '../Playlist/Playlist';
+import { Spotify } from '../../util/Spotify';
 
 
 class App extends Component {
@@ -22,15 +22,8 @@ class App extends Component {
         this.renamePlaylist = this.renamePlaylist.bind(this);
         this.savePlaylist   = this.savePlaylist.bind(this);
         this.searchTracks   = this.searchTracks.bind(this);
-        this.playTrack      = this.playTrack.bind(this);
-    }
-
-    playTrack(track){
-
-        // premium only
-        // Spotify.playTrack(track.id);
-    }
-
+    }  
+    
     addTrack(track){
         const pTracks = this.state.playlistTracks;
         if( !pTracks.find( pTrack => pTrack.id === track.id ) ){
@@ -82,8 +75,7 @@ class App extends Component {
                         onSearchTracks={this.searchTracks}  />          
                     <div className="App-playlist">
                         <SearchResults  
-                            onTrackAction={this.addTrack}     
-                            onPlayTrack={this.playTrack}                          
+                            onTrackAction={this.addTrack}                          
                             searchResults={this.state.searchResults} />
                         <Playlist       
                             onTrackAction={this.removeTrack} 

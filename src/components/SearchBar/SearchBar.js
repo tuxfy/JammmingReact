@@ -6,9 +6,9 @@ export class SearchBar extends React.Component{
     constructor(props) {
         super(props);
         this.state          = {searchString: ''};
-        this.handleChange   = this.handleChange.bind(this);
-        this.handleSearch   = this.handleSearch.bind(this);
-        this.handleKeyUp    = this.handleKeyUp.bind(this);
+        this.handleSearchChange = this.handleSearchChange.bind(this);
+        this.handleSearch       = this.handleSearch.bind(this);
+        this.handleSearchKeyUp  = this.handleSearchKeyUp.bind(this);
     }
 
     handleSearch (e){
@@ -20,11 +20,11 @@ export class SearchBar extends React.Component{
         e.preventDefault();
     }
 
-    handleChange (e){
+    handleSearchChange (e){
         this.setState({searchString: e.target.value});
     }
 
-    handleKeyUp(e){
+    handleSearchKeyUp(e){
         if (e.key === 'Enter') {
             document.querySelector('.SearchBar a').click();
         }
@@ -33,7 +33,7 @@ export class SearchBar extends React.Component{
     render(){
         return (
             <div className="SearchBar">
-                <input autoFocus onKeyUp={this.handleKeyUp} onChange={this.handleChange} placeholder="Enter A Song Title" />
+                <input autoFocus onKeyUp={this.handleSearchKeyUp} onChange={this.handleSearchChange} placeholder="Enter A Song Title" />
                 <a onClick={this.handleSearch}>SEARCH</a>
             </div>
         );

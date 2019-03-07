@@ -1,6 +1,6 @@
 const heroku        = 'https://cors-anywhere.herokuapp.com/';
-const accountURL    = 'https://accounts.spotify.com';
-const apiURL        = 'https://api.spotify.com/v1';
+const accountURI    = 'https://accounts.spotify.com';
+const apiURI        = 'https://api.spotify.com/v1';
 const redirectURI   = window.location.href;
 const clientID      = '72fba45ca3fe4adc999b405eba50b944';
 const responseType  = 'token';
@@ -10,6 +10,7 @@ const scopes        = ['playlist-modify-public'];
 export const Spotify = {
     user:               null,
     accessToken:        null,
+    expiresIn:          null,
     state:              Math.round(Math.random() * 999999),
     clientIDParam:      'client_id='.concat(clientID),
     redirectParam:      'redirect_uri='.concat(encodeURIComponent(redirectURI)),
@@ -47,31 +48,37 @@ export const Spotify = {
             return heroku.concat(url, entrypoint);
     },
 
-    getAccessToken(){    
+    getAccessToken(){           
+        const expiresAt = new Date(parseInt(this.getSessionProp('expiresAt')));
+        const now = new Date();
+        console.log(expiresAt, expiresAt < now);
+        if( expiresAt && expiresAt < now ){
+            this.removeFromSession('accessToken');
+            this.removeFromSession('user');
+            this.removeFromSession('expiresAt');
+        }
         if(this.getSessionProp('accessToken')){
             this.accessToken    = this.getSessionProp('accessToken'); 
             this.user           = JSON.parse(this.getSessionProp('user'));            
             return this.accessToken;      
         } else if( this.getSessionProp('accessToken') === null && window.location.href.match(/access_token=([^&]*)/) === null ){
             this.stateParam         = this.stateParam.concat(this.state);
-            const endpoint          = this.buildEndpoint(accountURL, '/authorize', [this.clientIDParam, this.redirectParam, this.responseTypeParam, this.scopeParam, this.stateParam]);
+            const endpoint          = this.buildEndpoint(accountURI, '/authorize', [this.clientIDParam, this.redirectParam, this.responseTypeParam, this.scopeParam, this.stateParam]);
             window.location.href    = endpoint;
         } else if (window.location.href.match(/access_token=([^&]*)/) !== null && window.location.href.match(/expires_in=([^&]*)/) !== null){            
-            this.accessToken =  window.location.href.match(/access_token=([^&]*)/)[1]; 
+            this.accessToken = window.location.href.match(/access_token=([^&]*)/)[1]; 
+            this.expiresIn   = window.location.href.match(/expires_in=([^&]*)/)[1]
             this.setSessionProp('accessToken', this.accessToken);
+            const expiresAt = new Date().getTime() + (this.expiresIn*1000);
+            this.setSessionProp('expiresAt', expiresAt);
             this.getUser().then((user) => {
                 this.setSessionProp('user', JSON.stringify(user));
-            });          
-            // const expiresIn = window.location.href.match(/expires_in=([^&]*)/)[1];
-            // window.setTimeout(() => {
-            //     this.removeFromSession('accessToken');     
-            //     this.user = null;                   
-            // }, expiresIn * 1000);
+            });  
             window.history.pushState('Access Token', null, '/');
         } 
     },
     getUser(){
-        const endpoint = this.buildApiEndpoint(apiURL, '/me');
+        const endpoint = this.buildApiEndpoint(apiURI, '/me');
 
         return fetch(endpoint, {
             headers: this.getAuthorizationHeader(),
@@ -105,7 +112,7 @@ export const Spotify = {
             throw new Error('Empty playlistName!');
         }
 
-        const endpoint = this.buildApiEndpoint(apiURL, '/users/'.concat(this.user.id, '/playlists'));
+        const endpoint = this.buildApiEndpoint(apiURI, '/users/'.concat(this.user.id, '/playlists'));
 
         return fetch(endpoint, {
             method: 'POST',
@@ -132,7 +139,7 @@ export const Spotify = {
             throw new Error('Empty playlist!');
         }    
 
-        const endpoint = this.buildApiEndpoint(apiURL, '/playlists/'.concat(playlistId, '/tracks'));
+        const endpoint = this.buildApiEndpoint(apiURI, '/playlists/'.concat(playlistId, '/tracks'));
 
         return fetch(endpoint, {
             method: 'POST',
@@ -160,7 +167,7 @@ export const Spotify = {
         const types         = ['track'];        
         const queryParam    = 'q='.concat(searchString);  
         const typeParam     = 'type='.concat(encodeURIComponent(types.join(',')));
-        const endpoint      = this.buildApiEndpoint(apiURL, '/search', [queryParam, typeParam]);
+        const endpoint      = this.buildApiEndpoint(apiURI, '/search', [queryParam, typeParam]);
         this.setSessionProp('search', searchString);
 
         return fetch(endpoint, {
