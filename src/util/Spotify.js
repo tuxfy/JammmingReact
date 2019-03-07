@@ -61,7 +61,7 @@ export const Spotify = {
             this.accessToken    = this.getSessionProp('accessToken'); 
             this.user           = JSON.parse(this.getSessionProp('user'));            
             return this.accessToken;      
-        } else if( this.getSessionProp('accessToken') === null && window.location.href.match(/access_token=([^&]*)/) === null ){
+        } else if( !this.getSessionProp('accessToken') && window.location.href.match(/access_token=([^&]*)/) === null ){
             this.stateParam         = this.stateParam.concat(this.state);
             const endpoint          = this.buildEndpoint(accountURI, '/authorize', [this.clientIDParam, this.redirectParam, this.responseTypeParam, this.scopeParam, this.stateParam]);
             window.location.href    = endpoint;
