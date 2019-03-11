@@ -22,5 +22,27 @@
 - handle page reload
     - accesstoken, user, expiresAt in sessionStorage
 
+### todos
+
+#### from searchlist to playlist
+- remove from searchlist
+- add to playlist
+
+#### from playlist to searchlist
+- remove from playlist
+- add to searchlist
+
+#### loader
+- onsearch
+- on save playlist
+
+*lifecycle methods*
+
+#### keeping searchterm after login
+
+
+
+
+
 
 
